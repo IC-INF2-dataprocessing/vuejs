@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router';
 import Button from 'primevue/button';
+import api from './Axios'; 
+import { ref, onMounted } from 'vue';
+
 </script>
 
 <template>
