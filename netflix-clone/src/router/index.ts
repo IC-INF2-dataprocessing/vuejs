@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
-import Dashboard from '../views/Dashboard.vue'; // Import the Dashboard component
+import Dashboard from '../views/Dashboard.vue'; 
+import axios from 'axios'; 
 
 const routes = [
   {
@@ -18,7 +19,7 @@ const routes = [
     path: '/dashboard',
     name: 'Dashboard',
     component: Dashboard,
-    meta: { requiresAuth: true }, // Add meta field to protect the route
+    meta: { requiresAuth: true }, 
   },
 ];
 
@@ -27,13 +28,29 @@ const router = createRouter({
   routes,
 });
 
-// Navigation Guard to Protect Routes
-router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('access_token'); // Get the token from local storage
-  if (to.meta.requiresAuth && !token) {
-    next('/login'); // Redirect to login if not authenticated
+
+router.beforeEach(async (to, from, next) => {
+  const token = localStorage.getItem('access_token'); 
+
+  if (to.meta.requiresAuth) {
+    if (!token) {
+      next('/login'); 
+    } else {
+      try {
+        await axios.get('http://localhost:9000/api/validate-token', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        next(); 
+      } catch (error) {
+        console.error('Invalid token:', error);
+        localStorage.removeItem('access_token'); 
+        next('/login'); 
+      }
+    }
+  } else if (to.name === 'Login' && token) {
+    next('/dashboard');
   } else {
-    next(); // Proceed to the route
+    next(); 
   }
 });
 
