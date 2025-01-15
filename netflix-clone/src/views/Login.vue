@@ -22,12 +22,10 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 import { store } from '../store';
 
-
 const email = ref('');
 const password = ref('');
 const errorMessage = ref('');
-const router = useRouter(); // Import and initialize router
-
+const router = useRouter();
 
 const handleLogin = async () => {
   try {
@@ -36,21 +34,24 @@ const handleLogin = async () => {
       password: password.value,
     });
 
+    // Store access token in localStorage and set default headers
     localStorage.setItem('access_token', response.data.access_token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access_token}`;
 
-    // Fetch user details
-    const userResponse = await axios.get('http://localhost:9000/api/user', {
-      headers: { Authorization: `Bearer ${response.data.access_token}` },
-    });
+    // Extract user data from the response
+    const user = response.data.user;
 
+    // Update global store with user details
     store.isLoggedIn = true;
-    store.userName = userResponse.data.name; // Update global store
+    store.userName = user.name; // Set user name
+    store.userRole = user.role; // Set user role
 
+    // Redirect to dashboard or any other page
     router.push('/dashboard');
   } catch (error) {
     console.error('Login error:', error);
-    errorMessage.value = error.response?.data?.message || 'Login failed. Please try again.';
+    errorMessage.value =
+      error.response?.data?.message || 'Login failed. Please try again.';
   }
 };
 

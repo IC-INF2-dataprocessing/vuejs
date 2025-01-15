@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router';
 import Button from 'primevue/button';
-import api from './Axios'; 
+import api from './Axios';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { store } from './store'; 
+import { store } from './store';
 
 const router = useRouter();
 
@@ -16,6 +16,7 @@ onMounted(async () => {
         headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
       });
       store.userName = response.data.name; // Update the global store
+      store.userRole = response.data.role; // Store the user role
     } catch (error) {
       console.error('Error fetching user details:', error);
       store.isLoggedIn = false;
@@ -28,6 +29,7 @@ const handleLogout = () => {
   localStorage.removeItem('access_token');
   store.isLoggedIn = false;
   store.userName = '';
+  store.userRole = ''; // Clear the user role
   router.push('/login');
 };
 </script>
@@ -40,14 +42,14 @@ const handleLogout = () => {
         <h2>Netflix</h2>
       </div>  
       <div class="navbar-menu">
-        <Button label="Home" class="p-button-text" />
-        <Button label="About" class="p-button-text" />
-        <Button label="Contact" class="p-button-outlined" />
       </div>
       <div class="navbar-actions">
         <!-- Conditional Rendering -->
         <template v-if="store.isLoggedIn">
-          <span> {{ store.userName }}</span>
+          <span>{{ store.userName }}</span>
+          <template v-if="store.userRole === 'Admin'">
+            <Button label="Admin" class="p-button-warning" @click="router.push('/admin')" />
+          </template>
           <Button label="Logout" class="p-button-outlined" @click="handleLogout" />
         </template>
         <template v-else>
@@ -67,6 +69,8 @@ const handleLogout = () => {
     </div>
   </div>
 </template>
+
+
 
 <style scoped>
 .navbar {
