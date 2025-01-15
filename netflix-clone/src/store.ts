@@ -2,6 +2,6 @@ import { reactive } from 'vue';
 
 export const store = reactive({
   isLoggedIn: !!localStorage.getItem('access_token'), // Initialize based on token presence
-  userName: '', // Holds the logged-in user's name
-  userRole: '', // Holds the logged-in user's role
+  userName: localStorage.getItem('user_name') || '', // Persisted user name
+  userRole: localStorage.getItem('user_role') || '', // Persisted user role
 });
