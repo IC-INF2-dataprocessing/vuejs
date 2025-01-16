@@ -2,7 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router';
 import Button from 'primevue/button';
 import api from './Axios';
-import { onMounted } from 'vue';
+import { onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { store } from './store';
 
@@ -10,7 +10,7 @@ const router = useRouter();
 
 // Fetch user details if logged in
 onMounted(async () => {
-  if (store.isLoggedIn) {
+  if (store.isLoggedIn && !store.userRole) { // Fetch only if role is not already set
     try {
       const response = await api.get('/user', {
         headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
@@ -27,11 +27,18 @@ onMounted(async () => {
 // Logout function
 const handleLogout = () => {
   localStorage.removeItem('access_token');
+  localStorage.removeItem('user_name');
+  localStorage.removeItem('user_role');
   store.isLoggedIn = false;
   store.userName = '';
   store.userRole = ''; // Clear the user role
   router.push('/login');
 };
+
+// Reactive computed properties
+const isAdmin = computed(() => store.userRole === 'Admin');
+const isLoggedIn = computed(() => store.isLoggedIn);
+const userName = computed(() => store.userName);
 </script>
 
 <template>
@@ -45,9 +52,9 @@ const handleLogout = () => {
       </div>
       <div class="navbar-actions">
         <!-- Conditional Rendering -->
-        <template v-if="store.isLoggedIn">
-          <span>{{ store.userName }}</span>
-          <template v-if="store.userRole === 'Admin'">
+        <template v-if="isLoggedIn">
+          <span>{{ userName }}</span>
+          <template v-if="isAdmin">
             <Button label="Admin" class="p-button-warning" @click="router.push('/admin')" />
           </template>
           <Button label="Logout" class="p-button-outlined" @click="handleLogout" />
@@ -69,8 +76,6 @@ const handleLogout = () => {
     </div>
   </div>
 </template>
-
-
 
 <style scoped>
 .navbar {

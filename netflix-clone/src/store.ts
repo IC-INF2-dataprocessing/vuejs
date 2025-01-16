@@ -1,7 +1,16 @@
+import { watch } from 'vue';
 import { reactive } from 'vue';
 
 export const store = reactive({
-  isLoggedIn: !!localStorage.getItem('access_token'), // Initialize based on token presence
-  userName: localStorage.getItem('user_name') || '', // Persisted user name
-  userRole: localStorage.getItem('user_role') || '', // Persisted user role
+  isLoggedIn: !!localStorage.getItem('access_token'),
+  userName: localStorage.getItem('user_name') || '',
+  userRole: localStorage.getItem('user_role') || 'User',
+});
+
+// Watch for changes and persist to localStorage
+watch(() => store.userRole, (newRole) => {
+  localStorage.setItem('user_role', newRole);
+});
+watch(() => store.userName, (newName) => {
+  localStorage.setItem('user_name', newName);
 });
