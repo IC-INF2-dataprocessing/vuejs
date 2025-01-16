@@ -56,6 +56,7 @@ const userName = computed(() => store.userName);
           <span>{{ userName }}</span>
           <template v-if="isAdmin">
             <Button label="Admin" class="p-button-warning" @click="router.push('/admin')" />
+            <Button label="Tables" class="p-button-warning" @click="router.push('/tableView')" />
           </template>
           <Button label="Logout" class="p-button-outlined" @click="handleLogout" />
         </template>

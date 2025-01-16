@@ -3,6 +3,7 @@ import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
 import Dashboard from '../views/Dashboard.vue';
 import Admin from '../views/Admin.vue';
+import TableView from '../views/TableView.vue';
 import axios from 'axios';
 import { store } from '../store';
 
@@ -32,6 +33,12 @@ const routes = [
   {
     path: '/',
     redirect: '/dashboard'
+  },
+  {
+    path: '/tableView',
+    name: 'TableView',
+    component: TableView,
+    meta: { requiresAuth: true, requiresRole: 'Admin' },
   }
 ];
 
