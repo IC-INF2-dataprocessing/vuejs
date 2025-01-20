@@ -10,7 +10,6 @@ Voer de volgende commandos uit in de terminal:
 ```
 git clone git@github.com:IC-INF2-dataprocessing/vuejs.git
 cd vuejs
-git checkout dev
 cd netflix-clone
 npm install
 npm run dev
