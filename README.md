@@ -1,3 +1,10 @@
+# Dataprocessing
+Leden: 
+Aaron de Bruin, 
+Dave van den Berg, 
+Lucas Wanink, 
+Lucas Lübbers
+
 ## Vue
 Voer de volgende commandos uit in de terminal:
 ```
