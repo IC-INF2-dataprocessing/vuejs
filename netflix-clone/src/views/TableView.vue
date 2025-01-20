@@ -7,7 +7,8 @@ const tableData = ref([])
 const columns = ref([])
 
 const baseURL = 'http://localhost:9000/api/'
-const tableNames = ['users', 'profiles']
+const tableNames = ['users', 'profiles', 'languages', 'subtitles', 'subscriptions', 'genres', 'preferences']
+const tableKeys = {"languages": ["name"], "subtitles": ["name"], "subscriptions": ["description", "price"], "genres": ["name"], "preferences": ["name"]}
 const selectedTable = ref(tableNames[0])
 
 // Fetch data for the selected table
@@ -17,7 +18,12 @@ async function fetchTableData() {
     const fullURL = `${baseURL}${table}`
     const response = await axios.get(fullURL)
     tableData.value = response.data
-    columns.value = response.data.length ? Object.keys(response.data[0]) : []
+    if (tableKeys[selectedTable.value]){
+      columns.value = tableKeys[selectedTable.value]
+    }
+    else {
+      columns.value = response.data.length ? Object.keys(response.data[0]) : []
+    }
   } catch (error) {
     console.error('Error fetching table data:', error)
     tableData.value = []
